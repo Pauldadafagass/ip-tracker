@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'VeloServices' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.06);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --accent-blue: #4da6ff;
+            --accent-purple: #9946ff;
+            --accent-pink: #ff46a6;
+            --accent-red: #ff4444;
+            --accent-green: #44ff44;
+            --velo-gold: #ffd700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            cursor: none;
+            overflow-x: hidden;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-dot {
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.05s ease;
+        }
+
+        .cursor.clicked {
+            transform: scale(0.8);
+            border-color: var(--accent-red);
+        }
+
+        .cursor-dot.clicked {
+            background: var(--accent-red);
+            transform: scale(2);
+        }
+
+        /* Click Effect */
+        .click-effect {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            border: 2px solid var(--accent-red);
+            border-radius: 50%;
+            animation: clickBurst 0.5s ease-out forwards;
+        }
+
+        @keyframes clickBurst {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            100% {
+                width: 100px;
+                height: 100px;
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Hover Effects */
+        a, button, .interactive {
+            cursor: none;
+        }
+
+        a:hover ~ .cursor,
+        button:hover ~ .cursor,
+        .interactive:hover ~ .cursor {
+            transform: scale(1.5);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-blue);
+            mix-blend-mode: normal;
+        }
+
+        /* Glass Morphism */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+        }
+
+        .glass:hover {
+            background: var(--glass-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Navigation */
+        .velo-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 1000;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .velo-logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .velo-logo-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-link {
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: linear-gradient(135deg, rgba(77, 166, 255, 0.2), rgba(153, 70, 255, 0.2));
+            border-color: rgba(77, 166, 255, 0.3);
+        }
+
+        .nav-login-btn {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <script>
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursorDot');
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            cursor.style.transform = `translate(-50%, -50%)`;
+
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
+            cursorDot.style.transform = `translate(-50%, -50%)`;
+
+            requestAnimationFrame(animateCursor);
+        }
+
+        animateCursor();
+
+        // Click Effect
+        document.addEventListener('click', (e) => {
+            cursor.classList.add('clicked');
+            cursorDot.classList.add('clicked');
+
+            // Create burst effect
+            const burst = document.createElement('div');
+            burst.className = 'click-effect';
+            burst.style.left = e.clientX + 'px';
+            burst.style.top = e.clientY + 'px';
+            document.body.appendChild(burst);
+
+            setTimeout(() => {
+                cursor.classList.remove('clicked');
+                cursorDot.classList.remove('clicked');
+                burst.remove();
+            }, 500);
+        });
+    </script>
+
+    <!-- Navigation -->
+    <nav class="velo-nav">
+        <div>
+            <a href="/" style="text-decoration: none;">
+                <div class="velo-logo">🚀 VeloServices</div>
+                <div class="velo-logo-sub">Premium Security</div>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link <%= currentPage === 'home' ? 'active' : '' %>">🏠 Home</a>
+            <a href="/services" class="nav-link <%= currentPage === 'services' ? 'active' : '' %>">⚡ Services</a>
+            <a href="/ip-tracker" class="nav-link <%= currentPage === 'ip-tracker' ? 'active' : '' %>">🌐 IP-Tracker</a>
+            <a href="/discord" class="nav-link <%= currentPage === 'discord' ? 'active' : '' %>">💬 Discord</a>
+            <% if (user) { %>
+                <a href="/dashboard" class="nav-link">📊 Dashboard</a>
+                <a href="/logout" class="nav-link">🚪 Logout</a>
+            <% } else { %>
+                <a href="/login" class="nav-link nav-login-btn">🔐 Admin Login</a>
+            <% } %>
+        </div>
+    </nav>

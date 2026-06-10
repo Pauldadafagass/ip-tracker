@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IP-Tracker Admin</title>
+    <style>
+        body { font-family: Arial; background: #0a0a2e; color: #fff; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 10px; text-align: left; }
+        th { background: #1a1a4e; }
+        td { background: #0d0d3d; }
+        .ip { color: #ff4444; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Gespeicherte IP-Adressen</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>IP-Adresse</th>
+            <th>Land</th>
+            <th>Stadt</th>
+            <th>ISP</th>
+            <th>Besuche</th>
+            <th>Letzter Besuch</th>
+        </tr>
+        <% visitors.forEach(v => { %>
+        <tr>
+            <td><%= v.id %></td>
+            <td class="ip"><%= v.ip_address %></td>
+            <td><%= v.country %></td>
+            <td><%= v.city %></td>
+            <td><%= v.isp %></td>
+            <td><%= v.visit_count %></td>
+            <td><%= v.visited_at.toLocaleString() %></td>
+        </tr>
+        <% }) %>
+    </table>
+    <p style="margin-top:20px;">Gesamt: <strong><%= visitors.length %></strong> Einträge</p>
+</body>
+</html>

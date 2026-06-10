@@ -1,0 +1,266 @@
+<% currentPage = 'home' %>
+<%- include('partials/header') %>
+
+<style>
+    .hero-section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 120px 30px 60px;
+        position: relative;
+    }
+
+    .hero-grid-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    }
+
+    .hero-title {
+        font-size: 80px;
+        font-weight: 800;
+        text-align: center;
+        background: linear-gradient(135deg, #fff 0%, #4da6ff 50%, #9946ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-subtitle {
+        font-size: 20px;
+        color: var(--text-secondary);
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stat-numbers {
+        font-size: 18px;
+        color: var(--accent-blue);
+        text-align: center;
+        margin-bottom: 60px;
+        font-family: 'Courier New', monospace;
+        position: relative;
+        z-index: 1;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 30px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .service-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, transparent, rgba(255,255,255,0.03), transparent);
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+
+    .service-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        border-color: rgba(77, 166, 255, 0.4);
+        box-shadow: 0 20px 60px rgba(77, 166, 255, 0.15);
+    }
+
+    .service-card:hover::before {
+        opacity: 1;
+    }
+
+    .service-icon {
+        font-size: 64px;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .service-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .service-desc {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 24px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .service-btn {
+        padding: 14px 32px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+        z-index: 1;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .service-btn:hover {
+        background: var(--glass-hover);
+        border-color: var(--accent-blue);
+    }
+
+    .velo-bot-section {
+        max-width: 1200px;
+        margin: 80px auto;
+        padding: 0 30px;
+    }
+
+    .bot-card {
+        background: linear-gradient(135deg, rgba(77,166,255,0.1), rgba(153,70,255,0.1));
+        border: 1px solid rgba(77,166,255,0.2);
+        border-radius: 24px;
+        padding: 50px;
+        text-align: center;
+    }
+
+    .bot-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(68, 255, 68, 0.1);
+        border: 1px solid rgba(68, 255, 68, 0.3);
+        padding: 8px 20px;
+        border-radius: 20px;
+        margin-bottom: 24px;
+    }
+
+    .bot-status-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--accent-green);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    .footer {
+        text-align: center;
+        padding: 40px;
+        border-top: 1px solid var(--glass-border);
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+</style>
+
+<main>
+    <section class="hero-section">
+        <div class="hero-grid-bg"></div>
+
+        <h1 class="hero-title animate-in">VeloServices</h1>
+        <p class="hero-subtitle animate-in">Premium IP-Tracking & Cyber Security Plattform</p>
+        <p class="stat-numbers animate-in">
+            📡 343.34.343 — Active Connections |
+            👥 12,847+ Users |
+            🌍 89 Countries |
+            ⚡ 99.9% Uptime
+        </p>
+
+        <div class="services-grid">
+            <a href="/ip-tracker" class="service-card interactive">
+                <div class="service-icon">🌐</div>
+                <div class="service-title">IP-Tracker Pro</div>
+                <div class="service-desc">
+                    Echtzeit IP-Tracking mit Geolokalisierung, ISP-Erkennung und detaillierten Statistiken
+                </div>
+                <span class="service-btn">📡 Jetzt tracken →</span>
+            </a>
+
+            <a href="/services" class="service-card interactive">
+                <div class="service-icon">🛡️</div>
+                <div class="service-title">Security Suite</div>
+                <div class="service-desc">
+                    Umfassende Sicherheitsanalyse, Schwachstellen-Scan und Bedrohungserkennung
+                </div>
+                <span class="service-btn">🔍 Analysieren →</span>
+            </a>
+
+            <a href="/discord" class="service-card interactive">
+                <div class="service-icon">🤖</div>
+                <div class="service-title">VeloSupport Bot</div>
+                <div class="service-desc">
+                    24/7 Discord Support mit KI-gestütztem Bot, Ticket-System und Live-Monitoring
+                </div>
+                <span class="service-btn">💬 Support →</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="velo-bot-section">
+        <div class="bot-card animate-in">
+            <div class="bot-status">
+                <div class="bot-status-dot"></div>
+                <span>VeloSupport Bot — Online</span>
+            </div>
+            <h2 style="font-size: 36px; margin-bottom: 16px;">🤖 VeloSupport Discord Bot</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 32px; font-size: 18px;">
+                Unser intelligenter Discord Bot überwacht dein Netzwerk 24/7,<br>
+                sendet Echtzeit-Benachrichtigungen und bietet Premium Support.
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="https://discord.gg/veloservices" target="_blank" class="service-btn" style="background: #5865F2; border-color: #5865F2;">
+                    🎮 Discord beitreten
+                </a>
+                <a href="/discord" class="service-btn">
+                    📋 Ticket erstellen
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2024 VeloServices | 🚀 Premium Cyber Security | 🌐 IP-Tracking | 🤖 Discord Bot</p>
+        <p style="margin-top: 8px;">Made with ❤️ by VeloTeam | v3.0.0</p>
+    </footer>
+</main>
+
+<%- include('partials/footer') %>

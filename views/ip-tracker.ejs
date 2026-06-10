@@ -1,0 +1,187 @@
+<% currentPage = 'ip-tracker' %>
+<%- include('partials/header') %>
+
+<style>
+    .tracker-container {
+        min-height: 100vh;
+        padding: 120px 30px 60px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .scan-box {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 50px;
+        text-align: center;
+    }
+
+    .ip-display {
+        font-size: 56px;
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        background: linear-gradient(135deg, var(--accent-blue), var(--accent-red));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 30px 0;
+        letter-spacing: 4px;
+    }
+
+    .scan-progress {
+        height: 4px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 2px;
+        margin: 30px 0;
+        overflow: hidden;
+    }
+
+    .scan-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+        width: 0%;
+        transition: width 0.1s linear;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-top: 30px;
+    }
+
+    .info-item {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .info-label {
+        color: var(--text-secondary);
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+    .info-value {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--accent-blue);
+    }
+
+    .countdown-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.9);
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .countdown-number {
+        font-size: 120px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--accent-red), var(--accent-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+
+<div class="tracker-container">
+    <div class="scan-box">
+        <h1 style="font-size: 32px; margin-bottom: 8px;">🌐 IP-Tracker Scan</h1>
+        <p style="color: var(--text-secondary);">Analyse deiner Netzwerkverbindung</p>
+
+        <div class="scan-progress">
+            <div class="scan-bar" id="scanBar"></div>
+        </div>
+
+        <div class="ip-display" id="ipDisplay">***.***.***.***</div>
+        <p id="scanStatus" style="color: var(--text-secondary);">🔍 Initialisiere Scan...</p>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">📍 Land</div>
+                <div class="info-value" id="country">—</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">🏙️ Stadt</div>
+                <div class="info-value" id="city">—</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">📡 ISP</div>
+                <div class="info-value" id="isp">—</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">🕐 Zeitzone</div>
+                <div class="info-value" id="timezone">—</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="countdown-overlay" id="countdownOverlay">
+    <div class="countdown-number" id="countdownNumber">1</div>
+    <p style="color: var(--text-secondary); font-size: 24px;">Weiterleitung...</p>
+</div>
+
+<script>
+    let scanProgress = 0;
+    const scanBar = document.getElementById('scanBar');
+    const ipDisplay = document.getElementById('ipDisplay');
+    const scanStatus = document.getElementById('scanStatus');
+    const countdownOverlay = document.getElementById('countdownOverlay');
+    const countdownNumber = document.getElementById('countdownNumber');
+
+    // IP tracken
+    fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: '/ip-tracker' })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('country').textContent = data.geo.country;
+            document.getElementById('city').textContent = data.geo.city;
+            document.getElementById('isp').textContent = data.geo.isp;
+            document.getElementById('timezone').textContent = data.geo.timezone;
+        }
+    });
+
+    // Scan Animation
+    const interval = setInterval(() => {
+        if (scanProgress < 100) {
+            scanProgress += Math.random() * 6;
+            if (scanProgress > 100) scanProgress = 100;
+            scanBar.style.width = scanProgress + '%';
+            scanStatus.textContent = `🔍 Scanne... ${Math.floor(scanProgress)}%`;
+
+            if (scanProgress > 80) {
+                ipDisplay.textContent = '343.34.343.***';
+            }
+        }
+
+        if (scanProgress >= 100) {
+            clearInterval(interval);
+            scanBar.style.width = '100%';
+            ipDisplay.textContent = '343.34.343.42';
+            scanStatus.textContent = '⚠️ IP-Adresse identifiziert!';
+
+            // Countdown
+            setTimeout(() => {
+                countdownOverlay.style.display = 'flex';
+                setTimeout(() => {
+                    window.location.href = 'https://www.youtube.com/shorts/_6HzLIJPH2A';
+                }, 1000);
+            }, 500);
+        }
+    }, 80);
+</script>
+
+<%- include('partials/footer') %>
